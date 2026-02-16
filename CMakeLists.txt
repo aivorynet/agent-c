@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
-project(aivory-monitor VERSION 1.0.0 LANGUAGES C)
+project(aivory-monitor VERSION 0.1.0 LANGUAGES C)
+set(PROJECT_HOMEPAGE_URL "https://aivory.net/monitor/")
 
 # Options
 option(AIVORY_BUILD_SHARED "Build shared library" ON)
