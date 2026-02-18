@@ -18,14 +18,9 @@ pkg_check_modules(LIBUNWIND libunwind)
 # Source files
 set(AIVORY_SOURCES
     src/agent.c
-    src/config.c
     src/capture/signal_handler.c
     src/capture/backtrace.c
-    src/capture/variable_capture.c
     src/transport/websocket.c
-    src/transport/reporter.c
-    src/util/json_builder.c
-    src/util/hash.c
 )
 
 set(AIVORY_HEADERS
