@@ -162,7 +162,7 @@ static char *build_register_message(aivory_agent_t *agent) {
         "},\"timestamp\":%ld}",
         agent->config.api_key,
         agent->agent_id,
-        agent->config.hostname,
+        agent->hostname,
         agent->config.environment,
 #ifdef __linux__
         "linux",
