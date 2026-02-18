@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake build-essential libunwind-dev
+        run: sudo apt-get update && sudo apt-get install -y cmake build-essential libunwind-dev libwebsockets-dev libjansson-dev
       - name: Build
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
