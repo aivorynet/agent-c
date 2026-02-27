@@ -154,7 +154,7 @@ static char *build_register_message(aivory_agent_t *agent) {
         "\"agent_id\":\"%s\","
         "\"hostname\":\"%s\","
         "\"environment\":\"%s\","
-        "\"agent_version\":\"1.0.0\","
+        "\"agent_version\":\"0.1.1\","
         "\"runtime\":\"c\","
         "\"runtime_version\":\"C11\","
         "\"platform\":\"%s\","

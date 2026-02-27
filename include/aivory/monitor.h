@@ -51,7 +51,7 @@ typedef struct aivory_stack_frame aivory_stack_frame_t;
  */
 struct aivory_config {
     const char *api_key;           /* Required: AIVory API key */
-    const char *backend_url;       /* Backend WebSocket URL (default: wss://api.aivory.net/ws/agent) */
+    const char *backend_url;       /* Backend WebSocket URL (default: wss://api.aivory.net/monitor/agent) */
     const char *environment;       /* Environment name (default: production) */
     double sampling_rate;          /* Sampling rate 0.0-1.0 (default: 1.0) */
     int max_capture_depth;         /* Max variable capture depth (default: 3) */

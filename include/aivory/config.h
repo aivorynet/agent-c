@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 /* Default values */
-#define AIVORY_DEFAULT_BACKEND_URL "wss://api.aivory.net/ws/agent"
+#define AIVORY_DEFAULT_BACKEND_URL "wss://api.aivory.net/monitor/agent"
 #define AIVORY_DEFAULT_ENVIRONMENT "production"
 #define AIVORY_DEFAULT_SAMPLING_RATE 1.0
 #define AIVORY_DEFAULT_MAX_CAPTURE_DEPTH 10
