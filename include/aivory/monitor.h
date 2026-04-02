@@ -35,10 +35,10 @@ extern "C" {
 #endif
 
 /* Version */
-#define AIVORY_VERSION_MAJOR 1
-#define AIVORY_VERSION_MINOR 0
-#define AIVORY_VERSION_PATCH 0
-#define AIVORY_VERSION_STRING "1.0.0"
+#define AIVORY_VERSION_MAJOR 0
+#define AIVORY_VERSION_MINOR 1
+#define AIVORY_VERSION_PATCH 2
+#define AIVORY_VERSION_STRING "0.1.2"
 
 /* Forward declarations */
 typedef struct aivory_config aivory_config_t;
@@ -51,7 +51,7 @@ typedef struct aivory_stack_frame aivory_stack_frame_t;
  */
 struct aivory_config {
     const char *api_key;           /* Required: AIVory API key */
-    const char *backend_url;       /* Backend WebSocket URL (default: wss://api.aivory.net/monitor/agent) */
+    const char *backend_url;       /* Backend WebSocket URL (default: wss://api.aivory.net/ws/agent) */
     const char *environment;       /* Environment name (default: production) */
     double sampling_rate;          /* Sampling rate 0.0-1.0 (default: 1.0) */
     int max_capture_depth;         /* Max variable capture depth (default: 3) */
@@ -151,6 +151,19 @@ void aivory_set_user(const char *user_id, const char *email, const char *usernam
  * Clears user information.
  */
 void aivory_clear_user(void);
+
+/**
+ * Sends a breakpoint hit event.
+ *
+ * @param conn Opaque connection handle (from agent internals)
+ * @param breakpoint_id The breakpoint identifier
+ * @param agent_id The agent identifier
+ * @param extra_json Optional extra JSON fields to include in the payload (without leading comma), or NULL
+ * @return 0 on success, -1 on error
+ */
+struct aivory_conn;
+int aivory_send_breakpoint_hit(struct aivory_conn *conn, const char *breakpoint_id,
+                               const char *agent_id, const char *extra_json);
 
 /* Convenience macros */
 #define AIVORY_CAPTURE_ERROR(msg) \

@@ -84,7 +84,12 @@ static void signal_handler(int sig, siginfo_t *info, void *context) {
             "\"context\":{\"signal\":%d,\"fatal\":true},"
             "\"captured_at\":\"%s\","
             "\"agent_id\":\"%s\","
-            "\"environment\":\"%s\""
+            "\"environment\":\"%s\","
+            "\"runtime_info\":{"
+            "\"runtime\":\"c\","
+            "\"platform\":\"%s\","
+            "\"arch\":\"%s\""
+            "}"
             "},"
             "\"timestamp\":%ld"
             "}",
@@ -98,6 +103,24 @@ static void signal_handler(int sig, siginfo_t *info, void *context) {
             timestamp,
             g_agent_ref->agent_id,
             g_agent_ref->config.environment,
+#ifdef __linux__
+            "linux",
+#elif defined(__APPLE__)
+            "darwin",
+#elif defined(_WIN32)
+            "windows",
+#else
+            "unknown",
+#endif
+#ifdef __x86_64__
+            "x86_64",
+#elif defined(__aarch64__)
+            "arm64",
+#elif defined(__i386__)
+            "x86",
+#else
+            "unknown",
+#endif
             (long)now * 1000
         );
 

@@ -12,6 +12,9 @@
 extern "C" {
 #endif
 
+/* Opaque connection handle */
+typedef struct aivory_conn aivory_conn_t;
+
 /* Message types */
 typedef enum {
     AIVORY_MSG_REGISTER,

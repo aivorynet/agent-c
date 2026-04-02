@@ -154,7 +154,7 @@ static char *build_register_message(aivory_agent_t *agent) {
         "\"agent_id\":\"%s\","
         "\"hostname\":\"%s\","
         "\"environment\":\"%s\","
-        "\"agent_version\":\"0.1.1\","
+        "\"agent_version\":\"0.1.2\","
         "\"runtime\":\"c\","
         "\"runtime_version\":\"C11\","
         "\"platform\":\"%s\","
@@ -268,6 +268,7 @@ static int ws_callback(struct lws *wsi, enum lws_callback_reasons reason,
                         pthread_mutex_lock(&g_connection->mutex);
                         g_connection->authenticated = true;
                         g_connection->state = AIVORY_CONN_AUTHENTICATED;
+                        g_connection->reconnect_attempts = 0;
                         pthread_mutex_unlock(&g_connection->mutex);
 
                         if (g_connection->agent && g_connection->agent->config.debug) {
@@ -577,4 +578,67 @@ void aivory_ws_send_exception(aivory_agent_t *agent, const char *json) {
             fprintf(stderr, "[AIVory Monitor] Message queued (not authenticated)\n");
         }
     }
+}
+
+int aivory_send_breakpoint_hit(aivory_conn_t *conn, const char *breakpoint_id,
+                               const char *agent_id, const char *extra_json) {
+    (void)conn; /* Uses global g_connection */
+    if (!g_connection || !breakpoint_id || !agent_id) {
+        return -1;
+    }
+
+    /* Build breakpoint_hit JSON message */
+    char *json = malloc(MAX_MESSAGE_SIZE);
+    if (!json) {
+        return -1;
+    }
+
+    time_t now = time(NULL);
+    char timestamp[32];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
+
+    int len = snprintf(json, MAX_MESSAGE_SIZE,
+        "{"
+        "\"type\":\"breakpoint_hit\","
+        "\"payload\":{"
+        "\"breakpoint_id\":\"%s\","
+        "\"agent_id\":\"%s\","
+        "\"captured_at\":\"%s\""
+        "%s%s"
+        "},"
+        "\"timestamp\":%ld"
+        "}",
+        breakpoint_id,
+        agent_id,
+        timestamp,
+        extra_json ? "," : "",
+        extra_json ? extra_json : "",
+        (long)now * 1000
+    );
+
+    if (len <= 0 || len >= MAX_MESSAGE_SIZE) {
+        free(json);
+        return -1;
+    }
+
+    pthread_mutex_lock(&g_connection->mutex);
+    aivory_connection_state_t state = g_connection->state;
+    bool authenticated = g_connection->authenticated;
+    pthread_mutex_unlock(&g_connection->mutex);
+
+    if (state == AIVORY_CONN_AUTHENTICATED && authenticated) {
+        /* Send directly */
+        ws_send_message(json);
+
+        /* Request writable callback for any additional queued messages */
+        if (g_connection->wsi) {
+            lws_callback_on_writable(g_connection->wsi);
+        }
+    } else {
+        /* Queue for later */
+        queue_push(&g_connection->queue, json);
+    }
+
+    free(json);
+    return 0;
 }
